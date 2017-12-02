@@ -2,13 +2,13 @@
 % read a image
 I = imread('4.png');
 
-% convert it to gray scale, to binary image in black and white, then reverse
-% the image and the background.
-I = rgb2gray(I);
-I = imbinarize(I);
-I = imcomplement(I);
+% process image
+I = rgb2gray(I);         % to gray scale
+I = imbinarize(I);       % to binary (0 and 1)
+I = imcomplement(I);     % reverse black and white (0 and 1)
 
-% thinning the image to a line of single pixel wide.
+% thinning the image to lines of single pixel wide.
+% by doing so, we remove all other properties of the image and only keep its shape
 % this method is from stackoverflow by Cecilia
 % https://stackoverflow.com/questions/30166166/unwanted-branches-in-thinning-process
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
