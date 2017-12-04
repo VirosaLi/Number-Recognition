@@ -29,7 +29,7 @@ numPixels = cellfun(@numel,cc.PixelIdxList);
 % Remove components shorter than threshold
 % This value vary for different input image
 % We need a threshold of 100 to process "5" but 10 to process "4"
-threshold  = 5;
+threshold  = 10;
 for ii=ind(sorted_px < threshold)
     cur_comp = cc.PixelIdxList{ii};
     I(cur_comp) = 0;
@@ -48,17 +48,35 @@ I = bwmorph(I, 'spur');
 dim = size(I);
 row = 1;
 col = 2;
+N = 1;
 distToOrigin_row = 0;
 distToOrigin_col = 0;
-N = 1;
-position = zeros(10000,2);
 for i = 1:dim(row)
    for j = 1 : dim(col)
        if (I(i,j)==1)
           % sum up each point's distance to the origin
           distToOrigin_row = distToOrigin_row + i;
           distToOrigin_col = distToOrigin_col + j;
-          
+          N = N + 1;
+       end
+   end
+end
+
+% calculate the center of the number
+rowCenter = round(distToOrigin_row/N);
+colCenter = round(distToOrigin_col/N);
+center = [rowCenter,colCenter];
+
+% recenter the image
+reCenterDist = [ dim(row)/2 - rowCenter, dim(col)/2 - colCenter];
+I = circshift(I,reCenterDist);
+
+% store all pixel to a position array
+N = 1;
+position = zeros(10000,2);
+for i = 1:dim(row)
+   for j = 1 : dim(col)
+       if (I(i,j)==1)
           % store each point in a array
           position(N,row) = i;
           position(N,col) = j;
@@ -71,10 +89,7 @@ end
 position(position==0) = [];
 position = reshape(position,2,[])';
 
-% calculate the center of the number
-rowCenter = round(rowCout/N);
-colCenter = round(colCout/N);
-center = [rowCenter,colCenter];
+
 
 % calculate the "radius" of the number 
 % usually this radius won't cover the whole image
@@ -103,3 +118,4 @@ y = rowCenter + scale*r*cos(t);
 line(x,y)
 
 axis equal
+
