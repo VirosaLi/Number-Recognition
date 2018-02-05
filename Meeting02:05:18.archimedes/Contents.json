@@ -1,0 +1,18 @@
+{
+  "sections" : [
+    {
+      "type" : "plain",
+      "contents" : "![Processed number 1](1_m.png)\n\n![Processed number 2](2_m.png)\n\n![Processed number 3](3_m.png)\n\n![Processed number 4](4_m.png)\n\n![Processed number 5](5_m.png)\n\n![Processed number 6](6_m.png)\n\n![Processed number 7](7_m.png)\n\n![Processed number 8](8_m.png)\n\n![Processed number 9](9_m.png)"
+    }
+  ],
+  "metadata" : {
+    "leftMargin" : 2.54,
+    "bottomMargin" : 2.54,
+    "rightMargin" : 2.54,
+    "indentStyle" : "tabs",
+    "pageNumberingEnabled" : false,
+    "indentWidth" : 4,
+    "topMargin" : 2.54,
+    "previewStyle" : "preview_modern"
+  }
+}
