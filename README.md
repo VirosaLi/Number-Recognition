@@ -1,3 +1,5 @@
 # NumberRecognition
 
-simple hand written numberrecognition
+simple hand written number recognition
+
+
