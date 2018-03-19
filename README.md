@@ -1,5 +1,7 @@
-# NumberRecognition
+# Number Recognition
 
-simple hand written number recognition
+Author: Fangchen Li
+
+Simple hand-written number recognition using ideas from physics. 
 
 
