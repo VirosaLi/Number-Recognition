@@ -1,4 +1,4 @@
-function [P] = MapToFrame_PointCharge(I, length)
+function [P] = MapToFrame_PointCharge(I, length, r)
 
 % index for row and col
 row = 1;
@@ -11,7 +11,6 @@ col = 2;
 % center = findCenter(I, length);
 
 % find the frame by reduce length by 2r;
-r = 7;
 [max, min] = findReducedFrame(length, r);
 
 % calculate the position of the middle line, the upper charge
@@ -54,21 +53,47 @@ for i = 1:length
                 if( topFrameCol >= min(col) && topFrameCol <= max(col) && i <= upperCharge(row) )
                     % the mapped point is at the top
                     P(min(row),topFrameCol) = P(min(row),topFrameCol) + I(i,j);
+                    if(topFrameCol ~= min(col))
+                        P(min(row),topFrameCol-1) = P(min(row),topFrameCol-1) + I(i,j);
+                    end
+                    
+                    if(topFrameCol ~= max(col))
+                        P(min(row),topFrameCol+1) = P(min(row),topFrameCol+1) + I(i,j);
+                    end
                     continue;
                     
                 elseif( midFrameCol >= min(col) && midFrameCol <= max(col) && i >= upperCharge(row) )
                     % the mapped point is in the middle
                     P(midLineRow,midFrameCol) = P(midLineRow,midFrameCol) + I(i,j);
+                    if(midFrameCol ~= min(col))
+                        P(midLineRow,midFrameCol-1) = P(midLineRow,midFrameCol-1) + I(i,j);
+                    end
+                    
+                    if(midFrameCol ~= max(col))
+                        P(midLineRow,midFrameCol+1) = P(midLineRow,midFrameCol+1) + I(i,j);
+                    end
                     continue;
                     
                 elseif( leftFrameRow >= min(row) && leftFrameRow <= midLineRow && j <= upperCharge(col) )
                     % the mapped point is on the left
                     P(leftFrameRow,min(col)) = P(leftFrameRow,min(col)) + I(i,j);
+                    
+                    if(leftFrameRow ~= min(row))
+                        P(leftFrameRow-1,min(col)) = P(leftFrameRow-1,min(col)) + I(i,j);
+                    end
+                    P(leftFrameRow+1,min(col)) = P(leftFrameRow+1,min(col)) + I(i,j);
+                    
                     continue;
                     
                 elseif( rightFrameRow >= min(row) && rightFrameRow <= midLineRow && j >= upperCharge(col) )
                     % the mapped point is on the right
                     P(rightFrameRow,max(col)) = P(rightFrameRow,max(col)) + I(i,j);
+                    
+                    if(rightFrameRow ~= min(row))
+                        P(rightFrameRow-1,max(col)) = P(rightFrameRow-1,max(col)) + I(i,j);
+                    end
+                    
+                    P(rightFrameRow+1,max(col)) = P(rightFrameRow+1,max(col)) + I(i,j);
                     continue;
                     
                 end
@@ -102,21 +127,45 @@ for i = 1:length
                 if( midFrameCol >= min(col) && midFrameCol <= max(col) && i <= lowerCharge(row) )
                     % the mapped point is in the middle
                     P(midLineRow,midFrameCol) = P(midLineRow,midFrameCol) + I(i,j);
+                    
+                    if(midFrameCol ~= min(col))
+                        P(midLineRow-1,midFrameCol) = P(midLineRow-1,midFrameCol) + I(i,j);
+                    end
+                    
+                    if(midFrameCol ~= max(col))
+                        P(midLineRow+1,midFrameCol) = P(midLineRow+1,midFrameCol) + I(i,j);
+                    end
                     continue;
                     
                 elseif( bottomFrameCol >= min(col) && bottomFrameCol <= max(col) && i >= lowerCharge(row) )
                     % the mapped point is at the bottom
                     P(max(row),bottomFrameCol) = P(max(row),bottomFrameCol) + I(i,j);
+                    
+                    if(bottomFrameCol ~= min(col))
+                        P(max(row),bottomFrameCol-1) = P(max(row),bottomFrameCol-1) + I(i,j);
+                    end
+                    
+                    if(bottomFrameCol ~= max(col))
+                        P(max(row),bottomFrameCol+1) = P(max(row),bottomFrameCol+1) + I(i,j);
+                    end
                     continue;
                     
                 elseif( leftFrameRow >= midLineRow && leftFrameRow <= max(row) && j <= lowerCharge(col) )
                     % the mapped point is on the left
                     P(leftFrameRow,min(col)) = P(leftFrameRow,min(col)) + I(i,j);
+                    P(leftFrameRow-1,min(col)) = P(leftFrameRow-1,min(col)) + I(i,j);
+                    if(leftFrameRow ~= max(row))
+                        P(leftFrameRow+1,min(col)) = P(leftFrameRow+1,min(col)) + I(i,j);
+                    end
                     continue;
                     
                 elseif( rightFrameRow >= midLineRow && rightFrameRow <= max(row) && j >= lowerCharge(col) )
                     % the mapped point is on the right
                     P(rightFrameRow,max(col)) = P(rightFrameRow,max(col)) + I(i,j);
+                    P(rightFrameRow-1,max(col)) = P(rightFrameRow-1,max(col)) + I(i,j);
+                    if(rightFrameRow ~= max(row))
+                        P(rightFrameRow+1,max(col)) = P(rightFrameRow+1,max(col)) + I(i,j);
+                    end
                     continue;
                 end
             end
