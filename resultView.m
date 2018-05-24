@@ -1,7 +1,7 @@
 figure;
 
 image = 2;
-r = 5;
+r = 6;
 scaleFactor = 20;
 
 A = imresize(test.images(:,:,image),scaleFactor);

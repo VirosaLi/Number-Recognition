@@ -39,7 +39,7 @@ result(1) = sprintf('Total Regnization Rate: %f.',totalRegnizationRate);
 result(2) = 'Number | Regnization Rate | Average Intensity';
 
 for i = 1:nDigit
-    result(i+2) = sprintf('   %d   |     %f     |    %f', board(i),regnizationRate(i),avgIntensity(i));
+    result(i+2) = sprintf('   %d   |     %f     |    %f', board(i), regnizationRate(i), avgIntensity(i));
 end
 
 disp(result)
