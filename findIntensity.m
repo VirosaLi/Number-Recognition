@@ -1,18 +1,18 @@
-function [ Intensity ] = findIntensity( P, StandardFrame, length, r )
+function [ Intensity ] = findIntensity( P, StandardFrame, r )
 
 nDigit = 10;
-
+[rowSize, colSize] = size(P);
 Intensity = zeros(nDigit,1);
 for k = 1:nDigit
     count = 0;
     sum = 0;
-    currFrame = StandardFrame(:,:,k,(r+1));
-    for i = 1:length
-        for j = 1:length
+    currFrame = StandardFrame(:,:,k,r);
+    for i = 1:rowSize
+        for j = 1:colSize
             sum = sum + 1;
             if currFrame(i,j) == 1
                 if P(i,j) == 0
-                    count = count - 1;
+                   % count = count - 1;
                 else
                     count = count + 1;
                 end

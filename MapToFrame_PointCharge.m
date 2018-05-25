@@ -4,25 +4,21 @@ function [P] = MapToFrame_PointCharge(I, length, r)
 row = 1;
 col = 2;
 
-% find the max and min index of the number
-% [max, min] = findBoundries(I, length);
-
-% find the center of the number
-% center = findCenter(I, length);
-
 % find the frame by reduce length by 2r;
 [max, min] = findReducedFrame(length, r);
 
 % calculate the position of the middle line, the upper charge
 % and the lower charge
 midLineRow = round((max(row)+min(row))/2);
-upperCharge = [(min(row)+midLineRow)/2, (max(col)+min(col))/2];
-lowerCharge = [(midLineRow+max(row))/2, (max(col)+min(col))/2];
+[upperCharge, lowerCharge] = findCharges(I, midLineRow);
 
 % map the number to the frame
-P = zeros(length,length);
+P = zeros(length, length);
 for i = 1:length
     for j = 1:length
+        
+        P(upperCharge(row), upperCharge(col)) = 2;
+        P(lowerCharge(row), lowerCharge(col)) = 3;
         if (I(i,j) ~= 0)
             if (i < midLineRow)
                 % the point is located at the upper frame
@@ -53,6 +49,9 @@ for i = 1:length
                 if( topFrameCol >= min(col) && topFrameCol <= max(col) && i <= upperCharge(row) )
                     % the mapped point is at the top
                     P(min(row),topFrameCol) = P(min(row),topFrameCol) + I(i,j);
+                    
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(topFrameCol ~= min(col))
                         P(min(row),topFrameCol-1) = P(min(row),topFrameCol-1) + I(i,j);
                     end
@@ -65,6 +64,9 @@ for i = 1:length
                 elseif( midFrameCol >= min(col) && midFrameCol <= max(col) && i >= upperCharge(row) )
                     % the mapped point is in the middle
                     P(midLineRow,midFrameCol) = P(midLineRow,midFrameCol) + I(i,j);
+                    
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(midFrameCol ~= min(col))
                         P(midLineRow,midFrameCol-1) = P(midLineRow,midFrameCol-1) + I(i,j);
                     end
@@ -78,21 +80,23 @@ for i = 1:length
                     % the mapped point is on the left
                     P(leftFrameRow,min(col)) = P(leftFrameRow,min(col)) + I(i,j);
                     
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(leftFrameRow ~= min(row))
                         P(leftFrameRow-1,min(col)) = P(leftFrameRow-1,min(col)) + I(i,j);
                     end
                     P(leftFrameRow+1,min(col)) = P(leftFrameRow+1,min(col)) + I(i,j);
-                    
                     continue;
                     
                 elseif( rightFrameRow >= min(row) && rightFrameRow <= midLineRow && j >= upperCharge(col) )
                     % the mapped point is on the right
                     P(rightFrameRow,max(col)) = P(rightFrameRow,max(col)) + I(i,j);
                     
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(rightFrameRow ~= min(row))
                         P(rightFrameRow-1,max(col)) = P(rightFrameRow-1,max(col)) + I(i,j);
                     end
-                    
                     P(rightFrameRow+1,max(col)) = P(rightFrameRow+1,max(col)) + I(i,j);
                     continue;
                     
@@ -128,12 +132,13 @@ for i = 1:length
                     % the mapped point is in the middle
                     P(midLineRow,midFrameCol) = P(midLineRow,midFrameCol) + I(i,j);
                     
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(midFrameCol ~= min(col))
-                        P(midLineRow-1,midFrameCol) = P(midLineRow-1,midFrameCol) + I(i,j);
+                        P(midLineRow,midFrameCol-1) = P(midLineRow,midFrameCol-1) + I(i,j);
                     end
-                    
                     if(midFrameCol ~= max(col))
-                        P(midLineRow+1,midFrameCol) = P(midLineRow+1,midFrameCol) + I(i,j);
+                        P(midLineRow,midFrameCol+1) = P(midLineRow,midFrameCol+1) + I(i,j);
                     end
                     continue;
                     
@@ -141,10 +146,11 @@ for i = 1:length
                     % the mapped point is at the bottom
                     P(max(row),bottomFrameCol) = P(max(row),bottomFrameCol) + I(i,j);
                     
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(bottomFrameCol ~= min(col))
                         P(max(row),bottomFrameCol-1) = P(max(row),bottomFrameCol-1) + I(i,j);
                     end
-                    
                     if(bottomFrameCol ~= max(col))
                         P(max(row),bottomFrameCol+1) = P(max(row),bottomFrameCol+1) + I(i,j);
                     end
@@ -154,6 +160,9 @@ for i = 1:length
                     % the mapped point is on the left
                     P(leftFrameRow,min(col)) = P(leftFrameRow,min(col)) + I(i,j);
                     P(leftFrameRow-1,min(col)) = P(leftFrameRow-1,min(col)) + I(i,j);
+                    
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(leftFrameRow ~= max(row))
                         P(leftFrameRow+1,min(col)) = P(leftFrameRow+1,min(col)) + I(i,j);
                     end
@@ -163,6 +172,9 @@ for i = 1:length
                     % the mapped point is on the right
                     P(rightFrameRow,max(col)) = P(rightFrameRow,max(col)) + I(i,j);
                     P(rightFrameRow-1,max(col)) = P(rightFrameRow-1,max(col)) + I(i,j);
+                    
+                    % the mapped charge affect its neighbors to create a
+                    % area effect
                     if(rightFrameRow ~= max(row))
                         P(rightFrameRow+1,max(col)) = P(rightFrameRow+1,max(col)) + I(i,j);
                     end
@@ -179,7 +191,7 @@ end
 % % index for row and col
 % row = 1;
 % col = 2;
-% 
+%
 % % find the boundries of the frame
 % max = zeros(2);
 % min = Inf(2,'single');
@@ -204,26 +216,30 @@ end
 % end
 
 % find the center of the number
-% function [center] = findCenter(I, length)
-% 
-% N = 0;
-% distToOrigin_row = 0;
-% distToOrigin_col = 0;
-% for i = 1:length
-%     for j = 1:length
-%         if (I(i,j) ~= 0)
-%             % sum up each point's distance to the origin
-%             distToOrigin_row = distToOrigin_row + i;
-%             distToOrigin_col = distToOrigin_col + j;
-%             N = N + 1;
-%         end
-%     end
-% end
-% center = [round(distToOrigin_row/N), round(distToOrigin_col/N)];
-% end
+function [center] = findCenter(I)
 
-% find the max and min index of the frame after scaling
-function [max, min] = findReducedFrame(length, r)
-max = [length - r, length - r];
-min = [r, r];
+[rowSize, colSize] = size(I);
+
+N = 0;
+distToOrigin_row = 0;
+distToOrigin_col = 0;
+for i = 1:rowSize
+    for j = 1:colSize
+        if (I(i,j) ~= 0)
+            % sum up each point's distance to the origin
+            distToOrigin_row = distToOrigin_row + i;
+            distToOrigin_col = distToOrigin_col + j;
+            N = N + 1;
+        end
+    end
+end
+center = [round(distToOrigin_row/N), round(distToOrigin_col/N)];
+end
+
+
+% find cneters of the upper and lower frame to place the charge
+function [upper, lower] = findCharges(I, mid)
+upper = findCenter(I(1:mid,:));
+lower = findCenter(I(mid+1:end,:));
+lower(1) = lower(1) + mid;
 end

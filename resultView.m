@@ -1,17 +1,24 @@
-figure;
+image = 2;           % choose an image
+r = 6;               % set the corresponding frame
 
-image = 2;
-r = 6;
-scaleFactor = 20;
+A = test.images(:,:,image);
+B = P(:,:,image);
 
-A = imresize(test.images(:,:,image),scaleFactor);
-B = imresize(P(:,:,image),scaleFactor);
-
-imshow(A);
+% plot the result
 figure
-imshow(B);
+% the original image
+subplot(1,2,1)  
+surf(A,'EdgeColor','None');
+view(2);  
+set(gca,'Ydir','reverse')
 
-intensity = findIntensity(P(:,:,image),StandardFrame, test.width, r);
+% the resulting image
+subplot(1,2,2)  
+surf(B,'EdgeColor','None');
+view(2);
+set(gca,'Ydir','reverse')
+
+% calculate intensity and display it
+intensity = findIntensity(P(:,:,image),StandardFrame, r);
 intensity(:,2) = [1 2 3 4 5 6 7 8 9 0];
-
 disp(intensity);
