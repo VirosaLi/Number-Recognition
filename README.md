@@ -9,7 +9,7 @@ Washington University in St.Louis
 Simple hand-written number recognition using ideas from physics.  
 
 ### Usage
-.To run the program, first include the folder  to the path. Then simply run the script mnist.  
+To run the program, first include the folder  to the path. Then simply run the script mnist.  
 The script viewImage can be used to graph overlay plot of the original image and the transformed image.  
 
 stdFrameGenerator: generate a standard  frame for digits.  
